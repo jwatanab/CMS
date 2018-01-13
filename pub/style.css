@@ -1,0 +1,172 @@
+html {
+ padding: 0;
+ margin: 0;
+ font-size: 72.5%;
+}
+
+a {
+ color: rgb(0,0,0);
+ text-decoration: none;
+ transition: .3s;
+}
+
+a:hover {
+ color: #1282ff;
+}
+  
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+strong,
+em,
+p {
+ font-weight: 200;
+}
+
+h1 {
+ font-size: 3em;
+ margin: 20px;
+ padding: 0;
+}
+  
+h2 {
+ font-size: 2.5em;
+}
+  
+h3 {
+ font-size: 2em;
+}
+
+body {
+ width: 100%;
+ padding: 0;
+ margin: 0;
+ font-family: 'Avenir', 'Helvetica Neue', 'Helvetica', 'Arial', 'Hiragino Sans', 'ヒラギノ角ゴシック', YuGothic, 'Yu Gothic', 'メイリオ', Meiryo, 'ＭＳ Ｐゴシック', 'MS PGothic';    
+}
+
+.container {
+ margin: 0 auto;
+ padding: 60px 15px;
+ text-align: center;
+}
+
+/*  Editer  */
+.container .main_content{
+ display: flex;
+}
+
+.container .content_header {
+ text-align: left;
+ display: flex;
+ font-size: 1.9em;
+ white-space: pre;
+ margin: 40px 0;
+}
+
+.container .content_header .submit_btn {
+ height: 3em;
+ display: inline;
+ vertical-align: bottom;
+ color: white;
+ padding: 7px 21px 14px; 
+ font-size: 0.8em;
+ margin: 55px 0 0 20px;
+ background-color: #1282ff;
+ border: none;
+ font-weight: 200;
+}
+
+.container .main_content .editer {
+ height: 776px;
+ text-align: center;
+ border:1px solid #81898d;
+ background-color: #11111111;
+ overflow: scroll;
+}
+
+.container .main_content .preview {
+ width: 100%;
+ height: 776px;
+ overflow: scroll;
+ border:1px solid #777eee;
+ background-color: #dee7ec;
+}
+
+/*  Select  */
+
+.container .grid_content {
+ height: 15px;
+ padding: 40px 25px;
+ margin: 5px 0;
+ font-size: 1.4em;
+ border: 1.5px solid #81898d;
+ background-color: #11111111;
+ opacity: 0.7; 
+ transition: .3s;
+}
+
+.container .strong{
+ font-size: 2em;
+ font-weight: 100;
+}
+
+.container .grid_content:hover{
+ opacity: 1;
+}
+
+.container .main_content .preview .convLarge  {
+ font-size: 3em;
+ margin: 20px;
+ border: none;
+ padding: 0;
+ background-color: #dee7ec;
+ font-weight: 100;
+}
+
+.container .main_content .preview .convMedium  {
+ font-size: 2.5em;
+ margin: 15px;
+ border: none;
+ padding: 0;
+ background-color: #dee7ec;
+ font-weight: 100;
+}
+
+.container .main_content .preview .convSmall  {
+ font-size: 2em;
+ margin: 10px;
+ border: none;
+ padding: 0;
+ background-color: #dee7ec;
+ font-weight: 100;
+}
+
+.container .main_content .preview .convRadio {
+ font-size: 1.6em;
+ margin: 10px;
+ border: none;
+ padding: 0;
+ background-color: #dee7ec;
+}
+
+.container .main_content .preview .convCheckbox {
+ font-size: 1.6em;
+ margin: 10px;
+ border: none;
+ padding: 0;
+ background-color: #dee7ec;
+}
+
+.container .main_content .preview .tstRadio {
+ font-size: 1.6em;
+ padding: 20px 10px;
+}
+
+.container .main_content .preview .tstBox {
+ font-size: 1.6em;
+ padding: 20px 10px;
+}
+

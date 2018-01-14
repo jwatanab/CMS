@@ -24389,16 +24389,42 @@
 
 	        _get(Object.getPrototypeOf(_MainAppFirst.prototype), 'constructor', this).call(this, props);
 	        /*  プレビュー画面内要素配列  */
-	        this.state = {
-	            item: [],
-	            items: [{ id: 0.282827191, text: 'こんばんわ' }, { id: 0.2828191027191, text: 'radio1' }, { id: 0.282827092921191, text: 'radio2' }, { id: 0.28281234527191, text: 'radio3' }, { id: 0.28282393827191, text: 'voluptas numquam aliquam cum eaque?' }]
-	        };
+	        this.state = { item: [] };
 	    }
 
 	    _createClass(MainAppFirst, [{
+	        key: 'able',
+	        value: function able(e) {
+	            var _this = this;
+
+	            /**
+	             *  親が存在する場合には親をe.targetで補足できないため(仕様).able関数を利用して親を特定
+	             *  elには要素の親となるDOMが代入されている
+	             */
+	            var el = e.target.className.substr(0, 4) === 'Node' ? e.target : e.target.parentElement;
+	            var target = this.state.item.map(function (l) {
+	                if (l.key === el.id) {
+	                    switch (l.props.children[0].props.type) {
+	                        case 'radio':
+	                            return _react2['default'].createElement('input', { className: 'convRadio', size: 30, placeholder: '項目の値を入力してください(単一)', onBlur: function (e) {
+	                                    return _this.blur(e);
+	                                }, key: l.key, id: el.id });
+	                        case 'checkbox':
+	                            return _react2['default'].createElement('input', { className: 'convCheckbox', size: 30, placeholder: '項目の値を入力してください(複数)', onBlur: function (e) {
+	                                    return _this.blur(e);
+	                                }, key: l.key, id: el.id });
+	                        default:
+	                            return false;
+	                    }
+	                }
+	                return l;
+	            });
+	            this.setState({ item: target });
+	        }
+	    }, {
 	        key: 'append',
 	        value: function append(e) {
-	            var _this = this;
+	            var _this2 = this;
 
 	            /*  keyとなる乱数  */
 	            var val = undefined;
@@ -24415,7 +24441,7 @@
 	                    _react2['default'].createElement(
 	                        'h1',
 	                        { className: 'item', id: val, key: val, onDoubleClick: function (e) {
-	                                return _this.insert(e);
+	                                return _this2.insert(e);
 	                            } },
 	                        '表題などに利用されるタイトル大です'
 	                    ));
@@ -24427,7 +24453,7 @@
 	                    this.state.item.push(_react2['default'].createElement(
 	                        'h2',
 	                        { className: 'item', id: val, key: val, onDoubleClick: function (e) {
-	                                return _this.insert(e);
+	                                return _this2.insert(e);
 	                            } },
 	                        '見出しなどに利用されるタイトル中です'
 	                    ));
@@ -24438,7 +24464,7 @@
 	                    this.state.item.push(_react2['default'].createElement(
 	                        'h3',
 	                        { className: 'item', id: val, key: val, onDoubleClick: function (e) {
-	                                return _this.insert(e);
+	                                return _this2.insert(e);
 	                            } },
 	                        '小見出しなどに利用されるタイトル小です'
 	                    ));
@@ -24465,7 +24491,7 @@
 	                    _react2['default'].createElement(
 	                        'div',
 	                        { className: 'Node tstRadio', id: val, key: val, onDoubleClick: function (e) {
-	                                return _this.able(e);
+	                                return _this2.able(e);
 	                            } },
 	                        _react2['default'].createElement('input', { type: 'radio', name: 'radio', value: '選択肢' }),
 	                        _react2['default'].createElement(
@@ -24481,7 +24507,7 @@
 	                    this.state.item.push(_react2['default'].createElement(
 	                        'div',
 	                        { className: 'Node tstBox', id: val, key: val, onDoubleClick: function (e) {
-	                                return _this.able(e);
+	                                return _this2.able(e);
 	                            } },
 	                        _react2['default'].createElement('input', { type: 'checkbox', name: 'checkbox', value: '複数' }),
 	                        _react2['default'].createElement(
@@ -24495,11 +24521,13 @@
 	                case 'p':
 	                    val = this.state.item.length + Math.random(10000);
 	                    var Drag = this.state.Drag;
-	                    this.state.item.push(this.state.Drag(_react2['default'].createElement(
+	                    this.state.item.push(_react2['default'].createElement(
 	                        'p',
-	                        { className: 'item', id: val, key: val },
+	                        { className: 'item', id: val, key: val, onDoubleClick: function (e) {
+	                                return _this2.insert(e);
+	                            } },
 	                        '本文に利用される文字列です'
-	                    )));
+	                    ));
 	                    this.setState({});
 	                    break;
 	                default:
@@ -24507,75 +24535,9 @@
 	            }
 	        }
 	    }, {
-	        key: 'insert',
-	        value: function insert(e) {
-	            var _this2 = this;
-
-	            /** 
-	             *  ダブルクリックされた時点でinput要素 + 各要素フォントサイズに変換 
-	             *  値が変更された時点で値を各要素に変換、その時にダブルクリックされた時点での配列位置を記憶しておかなければならない
-	            */
-	            var target = this.state.item.map(function (l) {
-	                if (l.key === e.target.id) {
-	                    var type = l.type;
-	                    switch (type) {
-	                        case 'h1':
-	                            return _react2['default'].createElement('input', { className: 'convLarge', size: 30, placeholder: l.props.children, onBlur: function (e) {
-	                                    return _this2.blur(e);
-	                                }, key: l.key, id: e.target.id });
-	                        case 'h2':
-	                            return _react2['default'].createElement('input', { className: 'convMedium', size: 30, placeholder: l.props.children, onBlur: function (e) {
-	                                    return _this2.blur(e);
-	                                }, key: l.key, id: e.target.id });
-	                        case 'h3':
-	                            return _react2['default'].createElement('input', { className: 'convSmall', size: 30, placeholder: l.props.children, onBlur: function (e) {
-	                                    return _this2.blur(e);
-	                                }, key: l.key, id: e.target.id });
-	                        case 'p':
-	                            return _react2['default'].createElement('input', { className: 'convText', size: 30, placeholder: l.props.children, onBlur: function (e) {
-	                                    return _this2.blur(e);
-	                                }, key: l.key, id: e.target.id });
-	                        default:
-	                            return l;
-	                    }
-	                }
-	                return l;
-	            });
-	            this.setState({ item: target });
-	        }
-	    }, {
-	        key: 'able',
-	        value: function able(e) {
-	            var _this3 = this;
-
-	            /**
-	             *  親が存在する場合には親をe.targetで補足できないため(仕様).able関数を利用して親を特定
-	             *  elには要素の親となるDOMが代入されている
-	             */
-	            var el = e.target.className.substr(0, 4) === 'Node' ? e.target : e.target.parentElement;
-	            var target = this.state.item.map(function (l) {
-	                if (l.key === el.id) {
-	                    switch (l.props.children[0].props.type) {
-	                        case 'radio':
-	                            return _react2['default'].createElement('input', { className: 'convRadio', size: 30, placeholder: '項目の値を入力してください(単一)', onBlur: function (e) {
-	                                    return _this3.blur(e);
-	                                }, key: l.key, id: el.id });
-	                        case 'checkbox':
-	                            return _react2['default'].createElement('input', { className: 'convCheckbox', size: 30, placeholder: '項目の値を入力してください(複数)', onBlur: function (e) {
-	                                    return _this3.blur(e);
-	                                }, key: l.key, id: el.id });
-	                        default:
-	                            return false;
-	                    }
-	                }
-	                return l;
-	            });
-	            this.setState({ item: target });
-	        }
-	    }, {
 	        key: 'blur',
 	        value: function blur(e) {
-	            var _this4 = this;
+	            var _this3 = this;
 
 	            /**
 	             *  編集済みのinput要素を元の要素に変換、input要素からフォーカスが外れた時にイベントが発火する
@@ -24586,70 +24548,109 @@
 	                    var val = e.target.id;
 	                    switch (e.target.className) {
 	                        case 'convLarge':
+	                            if (!e.target.value) return _react2['default'].createElement('i', { key: _this3.state.item.length + Math.random(10000) });
+	                            return(
+	                                /**
+	                                 * ReactDnD定義のItemコンストラクタに変換後のオブジェクトを入り子にする
+	                                 */
+	                                _react2['default'].createElement(
+	                                    Item,
+	                                    { key: val, id: val, onDrop: function (toId, fromId) {
+	                                            return _this3.changes(toId, fromId);
+	                                        } },
+	                                    _react2['default'].createElement(
+	                                        'h1',
+	                                        { id: val, key: val, className: 'item', onDoubleClick: function (e) {
+	                                                return _this3.edit(e);
+	                                            } },
+	                                        e.target.value
+	                                    )
+	                                )
+	                            );
+	                        case 'convMedium':
+	                            if (!e.target.value) return _react2['default'].createElement('i', { key: _this3.state.item.length + Math.random(10000) });
 	                            return _react2['default'].createElement(
 	                                Item,
 	                                { key: val, id: val, onDrop: function (toId, fromId) {
-	                                        return _this4.changes(toId, fromId);
+	                                        return _this3.changes(toId, fromId);
 	                                    } },
 	                                _react2['default'].createElement(
-	                                    'h1',
-	                                    { className: 'item', key: val, id: val, onDoubleClick: function (e) {
-	                                            return _this4.insert(e);
+	                                    'h2',
+	                                    { id: val, key: val, className: 'item', onDoubleClick: function (e) {
+	                                            return _this3.edit(e);
 	                                        } },
 	                                    e.target.value
 	                                )
 	                            );
-	                        case 'convMedium':
-	                            return _react2['default'].createElement(
-	                                'h2',
-	                                { className: 'item', key: val, id: val, onDoubleClick: function (e) {
-	                                        return _this4.insert(e);
-	                                    } },
-	                                e.target.value
-	                            );
 	                        case 'convSmall':
+	                            if (!e.target.value) return _react2['default'].createElement('i', { key: _this3.state.item.length + Math.random(10000) });
 	                            return _react2['default'].createElement(
-	                                'h3',
-	                                { className: 'item', key: val, id: val, onDoubleClick: function (e) {
-	                                        return _this4.insert(e);
+	                                Item,
+	                                { key: val, id: val, onDrop: function (toId, fromId) {
+	                                        return _this3.changes(toId, fromId);
 	                                    } },
-	                                e.target.value
+	                                _react2['default'].createElement(
+	                                    'h3',
+	                                    { id: val, key: val, className: 'item', onDoubleClick: function (e) {
+	                                            return _this3.edit(e);
+	                                        } },
+	                                    e.target.value
+	                                )
 	                            );
 	                        case 'convRadio':
-	                            if (!e.target.value) return _react2['default'].createElement('i', { key: _this4.state.item.length + Math.random(10000) });
+	                            if (!e.target.value) return _react2['default'].createElement('i', { key: _this3.state.item.length + Math.random(10000) });
 	                            return _react2['default'].createElement(
-	                                'div',
-	                                { className: 'Node tstRadio', id: val, key: val, value: e.target.value, onDoubleClick: function (e) {
-	                                        return _this4.able(e);
+	                                Item,
+	                                { key: val, id: val, onDrop: function (toId, fromId) {
+	                                        return _this3.changes(toId, fromId);
 	                                    } },
-	                                _react2['default'].createElement('input', { type: 'radio', name: 'radio', value: '選択肢' }),
 	                                _react2['default'].createElement(
-	                                    'span',
-	                                    null,
-	                                    e.target.value
+	                                    'div',
+	                                    { className: 'Node tstRadio', id: val, key: val, value: e.target.value, onDoubleClick: function (e) {
+	                                            return _this3.ableEdit(e);
+	                                        } },
+	                                    _react2['default'].createElement('input', { type: 'radio', name: 'radio', value: '選択肢' }),
+	                                    _react2['default'].createElement(
+	                                        'span',
+	                                        null,
+	                                        e.target.value
+	                                    )
 	                                )
 	                            );
 	                        case 'convCheckbox':
-	                            if (!e.target.value) return _react2['default'].createElement('i', { key: _this4.state.item.length + Math.random(10000) });
+	                            if (!e.target.value) return _react2['default'].createElement('i', { key: _this3.state.item.length + Math.random(10000) });
 	                            return _react2['default'].createElement(
-	                                'div',
-	                                { className: 'Node tstBox', id: val, key: val, value: e.target.value, onDoubleClick: function (e) {
-	                                        return _this4.able(e);
+	                                Item,
+	                                { key: val, id: val, onDrop: function (toId, fromId) {
+	                                        return _this3.changes(toId, fromId);
 	                                    } },
-	                                _react2['default'].createElement('input', { type: 'checkbox', name: 'checkbox', value: '複数' }),
 	                                _react2['default'].createElement(
-	                                    'span',
-	                                    null,
-	                                    e.target.value
+	                                    'div',
+	                                    { className: 'Node tstBox', id: val, key: val, value: e.target.value, onDoubleClick: function (e) {
+	                                            return _this3.ableEdit(e);
+	                                        } },
+	                                    _react2['default'].createElement('input', { type: 'checkbox', name: 'checkbox', value: '複数' }),
+	                                    _react2['default'].createElement(
+	                                        'span',
+	                                        null,
+	                                        e.target.value
+	                                    )
 	                                )
 	                            );
 	                        case 'convText':
+	                            if (!e.target.value) return _react2['default'].createElement('i', { key: _this3.state.item.length + Math.random(10000) });
 	                            return _react2['default'].createElement(
-	                                'p',
-	                                { className: 'item', key: val, id: val, onDoubleClick: function (e) {
-	                                        return _this4.insert(e);
+	                                Item,
+	                                { key: val, id: val, onDrop: function (toId, fromId) {
+	                                        return _this3.changes(toId, fromId);
 	                                    } },
-	                                e.target.value
+	                                _react2['default'].createElement(
+	                                    'p',
+	                                    { id: val, key: val, className: 'item', onDoubleClick: function (e) {
+	                                            return _this3.ableEdit(e);
+	                                        } },
+	                                    e.target.value
+	                                )
 	                            );
 	                        default:
 	                            return false;
@@ -24658,11 +24659,6 @@
 	                return l;
 	            });
 	            this.setState({ item: target });
-	        }
-	    }, {
-	        key: 'submit',
-	        value: function submit(e) {
-	            console.log(this.state);
 	        }
 	    }, {
 	        key: 'changes',
@@ -24681,9 +24677,113 @@
 	            this.setState({ item: it });
 	        }
 	    }, {
+	        key: 'edit',
+	        value: function edit(e) {
+	            var _this4 = this;
+
+	            /*  変換後に編集できないバグ  */
+	            var target = this.state.item.map(function (l) {
+	                console.log(l);
+	                if (l.props.children.key === e.target.id) {
+	                    var type = l.props.children.type;
+	                    switch (type) {
+	                        case 'h1':
+	                            return _react2['default'].createElement('input', { className: 'convLarge', size: 30, placeholder: l.props.children.props.children, onBlur: function (e) {
+	                                    return _this4.blur(e);
+	                                }, key: e.target.id, id: e.target.id });
+	                        case 'h2':
+	                            return _react2['default'].createElement('input', { className: 'convMedium', size: 30, placeholder: l.props.children.props.children, onBlur: function (e) {
+	                                    return _this4.blur(e);
+	                                }, key: e.target.id, id: e.target.id });
+	                        case 'h3':
+	                            return _react2['default'].createElement('input', { className: 'convSmall', size: 30, placeholder: l.props.children.props.children, onBlur: function (e) {
+	                                    return _this4.blur(e);
+	                                }, key: e.target.id, id: e.target.id });
+	                        case 'p':
+	                            return _react2['default'].createElement('input', { className: 'convText', size: 30, placeholder: l.props.children.props.children, onBlur: function (e) {
+	                                    return _this4.blur(e);
+	                                }, key: e.target.id, id: e.target.id });
+	                        default:
+	                            return l;
+	                    }
+	                }
+	                return l;
+	            });
+	            this.setState({ item: target });
+	        }
+	    }, {
+	        key: 'ableEdit',
+	        value: function ableEdit(e) {
+	            var _this5 = this;
+
+	            var el = e.target.className.substr(0, 4) === 'Node' ? e.target : e.target.parentElement;
+
+	            var target = this.state.item.map(function (l) {
+	                console.log(l);
+	                if (l.key === el.id) {
+	                    switch (l.props.children.props.children[0].props.type) {
+	                        case 'radio':
+	                            return _react2['default'].createElement('input', { className: 'convRadio', size: 30, placeholder: l.props.children.props.value, onBlur: function (e) {
+	                                    return _this5.blur(e);
+	                                }, key: l.key, id: el.id });
+	                        case 'checkbox':
+	                            return _react2['default'].createElement('input', { className: 'convCheckbox', size: 30, placeholder: l.props.children.props.value, onBlur: function (e) {
+	                                    return _this5.blur(e);
+	                                }, key: l.key, id: el.id });
+	                        default:
+	                            return false;
+	                    }
+	                }
+	                return l;
+	            });
+	            this.setState({ item: target });
+	        }
+	    }, {
+	        key: 'insert',
+	        value: function insert(e) {
+	            var _this6 = this;
+
+	            /** 
+	             *  ダブルクリックされた時点でinput要素 + 各要素フォントサイズに変換 
+	             *  値が変更された時点で値を各要素に変換、その時にダブルクリックされた時点での配列位置を記憶しておかなければならない
+	            */
+	            var target = this.state.item.map(function (l) {
+	                if (l.key === e.target.id) {
+	                    var type = l.type;
+	                    switch (type) {
+	                        case 'h1':
+	                            return _react2['default'].createElement('input', { className: 'convLarge', size: 30, placeholder: l.props.children, onBlur: function (e) {
+	                                    return _this6.blur(e);
+	                                }, key: l.key, id: e.target.id });
+	                        case 'h2':
+	                            return _react2['default'].createElement('input', { className: 'convMedium', size: 30, placeholder: l.props.children, onBlur: function (e) {
+	                                    return _this6.blur(e);
+	                                }, key: l.key, id: e.target.id });
+	                        case 'h3':
+	                            return _react2['default'].createElement('input', { className: 'convSmall', size: 30, placeholder: l.props.children, onBlur: function (e) {
+	                                    return _this6.blur(e);
+	                                }, key: l.key, id: e.target.id });
+	                        case 'p':
+	                            return _react2['default'].createElement('input', { className: 'convText', size: 30, placeholder: l.props.children, onBlur: function (e) {
+	                                    return _this6.blur(e);
+	                                }, key: l.key, id: e.target.id });
+	                        default:
+	                            return l;
+	                    }
+	                }
+	                return l;
+	            });
+	            this.setState({ item: target });
+	        }
+	    }, {
+	        key: 'submit',
+	        value: function submit(e) {
+	            console.log(this.state);
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this5 = this;
+	            var _this7 = this;
 
 	            return _react2['default'].createElement(
 	                'div',
@@ -24699,7 +24799,7 @@
 	                    _react2['default'].createElement(
 	                        'button',
 	                        { className: 'submit_btn', onClick: function (e) {
-	                                return _this5.submit(e);
+	                                return _this7.submit(e);
 	                            } },
 	                        '詳細設計画面'
 	                    )
@@ -24713,63 +24813,63 @@
 	                        _react2['default'].createElement(
 	                            'div',
 	                            { className: 'grid_content', onClick: function (e) {
-	                                    return _this5.append('h1');
+	                                    return _this7.append('h1');
 	                                } },
 	                            'タイトル 大'
 	                        ),
 	                        _react2['default'].createElement(
 	                            'div',
 	                            { className: 'grid_content', onClick: function (e) {
-	                                    return _this5.append('h2');
+	                                    return _this7.append('h2');
 	                                } },
 	                            'タイトル 中'
 	                        ),
 	                        _react2['default'].createElement(
 	                            'div',
 	                            { className: 'grid_content', onClick: function (e) {
-	                                    return _this5.append('h3');
+	                                    return _this7.append('h3');
 	                                } },
 	                            'タイトル 小'
 	                        ),
 	                        _react2['default'].createElement(
 	                            'div',
 	                            { className: 'grid_content', onClick: function (e) {
-	                                    return _this5.append('input');
+	                                    return _this7.append('input');
 	                                } },
 	                            '入力欄 一行'
 	                        ),
 	                        _react2['default'].createElement(
 	                            'div',
 	                            { className: 'grid_content', onClick: function (e) {
-	                                    return _this5.append('textarea');
+	                                    return _this7.append('textarea');
 	                                } },
 	                            '入力欄 複数行'
 	                        ),
 	                        _react2['default'].createElement(
 	                            'div',
 	                            { className: 'grid_content', onClick: function (e) {
-	                                    return _this5.append('radio');
+	                                    return _this7.append('radio');
 	                                } },
 	                            '選択肢 単一'
 	                        ),
 	                        _react2['default'].createElement(
 	                            'div',
 	                            { className: 'grid_content', onClick: function (e) {
-	                                    return _this5.append('box');
+	                                    return _this7.append('box');
 	                                } },
 	                            '選択肢 複数'
 	                        ),
 	                        _react2['default'].createElement(
 	                            'div',
 	                            { className: 'grid_content', onClick: function (e) {
-	                                    return _this5.append('p');
+	                                    return _this7.append('p');
 	                                } },
 	                            '文章'
 	                        ),
 	                        _react2['default'].createElement(
 	                            'div',
 	                            { className: 'grid_content', onClick: function (e) {
-	                                    return _this5.append('tamplate');
+	                                    return _this7.append('tamplate');
 	                                } },
 	                            '基本テンプレート'
 	                        )
@@ -24807,15 +24907,7 @@
 	    _createClass(Item, [{
 	        key: 'render',
 	        value: function render() {
-	            return _react2['default'].createElement(
-	                'div',
-	                null,
-	                this.props.connectDragSource(this.props.connectDropTarget(_react2['default'].createElement(
-	                    'div',
-	                    null,
-	                    this.props.children
-	                )))
-	            );
+	            return this.props.connectDragSource(this.props.connectDropTarget(this.props.children));
 	        }
 	    }]);
 

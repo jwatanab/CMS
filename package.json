@@ -4,7 +4,7 @@
   "description": "",
   "main": "script.js",
   "scripts": {
-    "start": "nodemon serve.js"
+    "start": "webpack && nodemon serve.js"
   },
   "keywords": [],
   "author": "",

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { DragDropContext, DropTarget, DragSource } from 'react-dnd'
 import ReactDnDHTML5Backend from 'react-dnd-html5-backend'
+import request from 'superagent'
 
 @DragDropContext(ReactDnDHTML5Backend)
 
@@ -12,7 +13,7 @@ export default class MainAppFirst extends Component {
     constructor(props) {
         super(props)
         /*  プレビュー画面内要素配列  */
-        this.state = { item: [] }
+        this.state = { item: [], title: [] }
     }
     able(e) {
         /**
@@ -121,28 +122,44 @@ export default class MainAppFirst extends Component {
                 const val = e.target.id
                 switch (e.target.className) {
                     case 'convLarge':
-                        if (!e.target.value) return <i key={this.state.item.length + Math.random(10000)}></i>
+                        if (!e.target.value) return (
+                            <moc key={this.state.item.length + Math.random(10000)}>
+                                <moc key={this.state.item.length + Math.random(10000)}></moc>
+                            </moc>
+                        )
                         return (
                             <Item key={val} id={val} onDrop={(toId, fromId) => this.changes(toId, fromId)}>
                                 <h1 id={val} key={val} className='item' onDoubleClick={e => this.edit(e)}>{e.target.value}</h1>
                             </Item>
                         )
                     case 'convMedium':
-                        if (!e.target.value) return <i key={this.state.item.length + Math.random(10000)}></i>
+                        if (!e.target.value) return (
+                            <moc key={this.state.item.length + Math.random(10000)}>
+                                <moc key={this.state.item.length + Math.random(10000)}></moc>
+                            </moc>
+                        )
                         return (
                             <Item key={val} id={val} onDrop={(toId, fromId) => this.changes(toId, fromId)}>
                                 <h2 id={val} key={val} className='item' onDoubleClick={e => this.edit(e)}>{e.target.value}</h2>
                             </Item>
                         )
                     case 'convSmall':
-                        if (!e.target.value) return <i key={this.state.item.length + Math.random(10000)}></i>
+                        if (!e.target.value) return (
+                            <moc key={this.state.item.length + Math.random(10000)}>
+                                <moc key={this.state.item.length + Math.random(10000)}></moc>
+                            </moc>
+                        )
                         return (
                             <Item key={val} id={val} onDrop={(toId, fromId) => this.changes(toId, fromId)}>
                                 <h3 id={val} key={val} className='item' onDoubleClick={e => this.edit(e)}>{e.target.value}</h3>
                             </Item>
                         )
                     case 'convRadio':
-                        if (!e.target.value) return <i key={this.state.item.length + Math.random(10000)}></i>
+                        if (!e.target.value) return (
+                            <moc key={this.state.item.length + Math.random(10000)}>
+                                <moc key={this.state.item.length + Math.random(10000)}></moc>
+                            </moc>
+                        )
                         return (
                             <Item key={val} id={val} onDrop={(toId, fromId) => this.changes(toId, fromId)}>
                                 <div className='Node tstRadio' id={val} key={val} value={e.target.value} onDoubleClick={e => this.ableEdit(e)}>
@@ -152,7 +169,11 @@ export default class MainAppFirst extends Component {
                             </Item>
                         )
                     case 'convCheckbox':
-                        if (!e.target.value) return <i key={this.state.item.length + Math.random(10000)}></i>
+                        if (!e.target.value) return (
+                            <moc key={this.state.item.length + Math.random(10000)}>
+                                <moc key={this.state.item.length + Math.random(10000)}></moc>
+                            </moc>
+                        )
                         return (
                             <Item key={val} id={val} onDrop={(toId, fromId) => this.changes(toId, fromId)}>
                                 <div className='Node tstBox' id={val} key={val} value={e.target.value} onDoubleClick={e => this.ableEdit(e)}>
@@ -162,7 +183,11 @@ export default class MainAppFirst extends Component {
                             </Item>
                         )
                     case 'convText':
-                        if (!e.target.value) return <i key={this.state.item.length + Math.random(10000)}></i>
+                        if (!e.target.value) return (
+                            <moc key={this.state.item.length + Math.random(10000)}>
+                                <moc key={this.state.item.length + Math.random(10000)}></moc>
+                            </moc>
+                        )
                         return (
                             <Item key={val} id={val} onDrop={(toId, fromId) => this.changes(toId, fromId)}>
                                 <p id={val} key={val} className='item' onDoubleClick={e => this.ableEdit(e)}>{e.target.value}</p>
@@ -251,30 +276,61 @@ export default class MainAppFirst extends Component {
         this.setState({ item: target })
     }
     submit(e) {
-        console.log(this.state)
+        let details = new String()
+        for (let i = 0, j = this.state.item; i < j.length; i++) {
+            const l = j[i]
+            if (typeof l.type === 'function') {
+                if (l.props.children.props.className.substr(0, 4) === 'Node') {
+                    details += `<div>`
+                        + `<input type="${l.props.children.props.children[0].props.type}" />`
+                        + `<span>${l.props.children.props.children[1].props.children}</span>`
+                        + `</div>`;
+                }
+                else details += `<${l.props.children.type}>${l.props.children.props.children}</${l.props.children.type}>`
+            }
+        }
+        request
+            .get('/api/insert')
+            .query({
+                title: '店内アンケート',
+                str: details
+            })
+            .end((err, data) => {
+                if (err) return
+                console.log(details)
+            })
     }
     render() {
         return (
-            <div className="container">
-                <div className="content_header">
-                    <h3>レイアウトを選択してください</h3>
-                    <button className='submit_btn' onClick={e => this.submit(e)}>詳細設計画面</button>
+            <div>
+                <div className="container">
+                    <div className="content_header">
+                        <h3>レイアウトを選択してください</h3>
+                        <button className='submit_btn' onClick={e => this.submit(e)}>詳細設計画面</button>
+                    </div>
+                    <div className="main_content">
+                        <div className="editer">
+                            <div className="grid_content" onClick={e => this.append('h1')}>タイトル 大</div>
+                            <div className="grid_content" onClick={e => this.append('h2')}>タイトル 中</div>
+                            <div className="grid_content" onClick={e => this.append('h3')}>タイトル 小</div>
+                            {
+                                /**
+                                 * <div className="grid_content" onClick={e => this.append('input')}>入力欄 一行</div>
+                                 * <div className="grid_content" onClick={e => this.append('textarea')}>入力欄 複数行</div>
+                                 */
+                            }
+                            <div className="grid_content" onClick={e => this.append('radio')}>選択肢 単一</div>
+                            <div className="grid_content" onClick={e => this.append('box')}>選択肢 複数</div>
+                            <div className="grid_content" onClick={e => this.append('p')}>文章</div>
+                            <div className="grid_content" onClick={e => this.append('tamplate')}>基本テンプレート</div>
+                        </div>
+                        <div className="preview">
+                            <div className="variable">{this.state.item}</div>
+                        </div>
+                    </div>
                 </div>
-                <div className="main_content">
-                    <div className="editer">
-                        <div className="grid_content" onClick={e => this.append('h1')}>タイトル 大</div>
-                        <div className="grid_content" onClick={e => this.append('h2')}>タイトル 中</div>
-                        <div className="grid_content" onClick={e => this.append('h3')}>タイトル 小</div>
-                        <div className="grid_content" onClick={e => this.append('input')}>入力欄 一行</div>
-                        <div className="grid_content" onClick={e => this.append('textarea')}>入力欄 複数行</div>
-                        <div className="grid_content" onClick={e => this.append('radio')}>選択肢 単一</div>
-                        <div className="grid_content" onClick={e => this.append('box')}>選択肢 複数</div>
-                        <div className="grid_content" onClick={e => this.append('p')}>文章</div>
-                        <div className="grid_content" onClick={e => this.append('tamplate')}>基本テンプレート</div>
-                    </div>
-                    <div className="preview">
-                        <div className="variable">{this.state.item}</div>
-                    </div>
+                <div className='container'>
+                    <div className='result'>{this.state.result}</div>
                 </div>
             </div>
         )

@@ -3,11 +3,11 @@ import webpack from 'webpack'
 export default {
     context: __dirname + '/src',
     entry: {
-        javascript: './main.js',
+        javascript: './index.js',
     },
 
     output: {
-        path: __dirname + '/pub',
+        path: __dirname + '/public',
         filename: 'bundle.js',
     },
 
@@ -16,7 +16,7 @@ export default {
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                loaders: ['babel-loader'],
+                loaders: ['babel-loader']
             },
         ],
         devtool: '#source-map'
